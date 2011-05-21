@@ -31,7 +31,10 @@
     headers.Accept = 'text/javascript, text/html, application/xml, text/xml, */*';
     headers['X-Requested-With'] = headers['X-Requested-With'] || 'XMLHttpRequest';
     if (options.data) {
-      headers['Content-type'] = 'application/x-www-form-urlencoded';
+      // This causes Express/Connect to flail, meaning, the request.body is undefined when
+      // the header['content-type'] = 'application/json' AND 'application/x-wwww-form-urlencoded'  
+      // Connect either expects application/json or application/x-www-form-urlencoded
+      if(!options.isExpressJsonRequest) headers['Content-type'] = 'application/x-www-form-urlencoded';
       for (var h in headers) {
         headers.hasOwnProperty(h) && http.setRequestHeader(h, headers[h], false);
       }
